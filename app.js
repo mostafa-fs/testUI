@@ -1,18 +1,30 @@
 const express = require('express');
+const unirest = require("unirest");
 const app = express();
 const port = process.env.PORT || 3000;
 
 app.get("/", (req, res) => {
-    res.send("hi!");
+    res.send("Hi there!")    
+});
 
-    // var unirest = require("unirest")
+app.get("/users", (req, res) => {
+    var req = unirest.get("http://localhost:5000/users/all")
 
-    // var req = unirest.get("http://localhost:5000/users/all")
+    req.end((response) => {
+        if (response.error) throw new Error(response.error)
+            res.send(response.body)
+            console.log(response.body)
+    })    
+});
 
-    // req.end((res) => {
-    //         if (res.error) throw new Error(res.error)
-    //         console.log(res.body)
-    // })    
+app.get("/users/:id", (req, res) => {
+    var req = unirest.get("http://localhost:5000/users/"+req.param('id'))
+
+    req.end((response) => {
+        if (response.error) throw new Error(response.error)
+            res.send(response.body)
+            console.log(response.body)
+    })    
 });
 
 app.listen(port, () => {
